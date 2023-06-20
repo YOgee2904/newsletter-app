@@ -1,95 +1,62 @@
+"use client"
 import Image from 'next/image'
 import styles from './page.module.css'
+import { SyntheticEvent, useEffect, useRef, useState } from 'react'
+import {FaCheckCircle} from 'react-icons/fa';
+import { useRouter } from 'next/navigation';
+import Button from 'src/components/Button';
+
 
 export default function Home() {
+  const inputEle = useRef<HTMLInputElement>(null);
+  const router  = useRouter();
+  const [inputValue, setInputValue] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
+useEffect(() =>{
+ inputEle.current?.focus();
+
+}, [])
+const handleChange  = (e:React.ChangeEvent<HTMLInputElement>) => {
+  setInputValue( e.target.value);
+  if(inputEle.current){
+    setError(false);
+  let el = inputEle.current;
+  el.style.borderColor = "black";
+  }
+}
+const handleSubmit = (e: React.FormEvent<HTMLFormElement>)=>{
+  e.preventDefault();
+  if(!inputValue && inputEle.current){
+    let el = inputEle.current;
+    el.style.borderColor = "red";
+    setError(true);
+   }else{
+    localStorage.setItem('email', inputValue?.toString()!);
+    router.push('/thankyou')
+   }
+}
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+   <div className={styles.container}>
+    <div className={styles.item1}>
+      <h1>Stay updated!</h1>
+      <p>Join 60,000+ product managers receiving monthly updates on:</p>
+      <ul className={styles.lists}>
+        <li className={styles.list}><FaCheckCircle className={styles.icon}/>Product Discovery and building what matters</li>  
+        <li className={styles.list}><FaCheckCircle className={styles.icon}/>Measuring to ensure the updates are a success</li>  
+        <li className={styles.list}><FaCheckCircle className={styles.icon}/>And much More!</li>  
+      </ul>
+      <form className={styles.form} onSubmit={handleSubmit}>
+      <label htmlFor='email'>Email address</label>
+      {error && <p className={styles.error}>Please enter your email</p>}
+      <br />
+      <input onChange={handleChange}ref={inputEle} type='email' id='email' placeholder='Enter your email' />
+      <br />
+      <Button text='Subscribe to monthly newsletter'/>
+      </form>
+   </div>
+   <div className={styles.item2}>
+  <Image className= {styles.image} src='/image1.webp' width={500} height={500} alt='image'/>
+   </div>
+   </div>
   )
 }
